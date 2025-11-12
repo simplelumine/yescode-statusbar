@@ -1,8 +1,8 @@
 {
-  "name": "yescode-statusbar",
-  "displayName": "YesCode StatusBar",
+  "name": "yescoder",
+  "displayName": "YesCoder",
   "publisher": "simplelumine",
-  "description": "Display YesCode subscription balance in VS Code status bar",
+  "description": "Your essential companion for YesCode in VS Code. Monitor your balance and manage providers seamlessly.",
   "version": "0.3.0",
   "license": "MIT",
   "icon": "logo.png",

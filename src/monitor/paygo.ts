@@ -1,4 +1,4 @@
-import { ProfileResponse, BalanceResult } from './types';
+import { ProfileResponse, BalanceResult } from '../types';
 
 export function calculatePayGoBalance(profile: ProfileResponse): BalanceResult {
     const { pay_as_you_go_balance } = profile;

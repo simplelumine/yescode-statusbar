@@ -1,4 +1,4 @@
-import { ProfileResponse, BalanceResult } from './types';
+import { ProfileResponse, BalanceResult } from '../types';
 import { calculateSubscriptionBalance } from './subscription';
 import { calculateTeamBalance } from './team';
 import { calculatePayGoBalance } from './paygo';

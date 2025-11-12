@@ -1,4 +1,4 @@
-import { ProfileResponse, BalanceResult } from './types';
+import { ProfileResponse, BalanceResult } from '../types';
 import { formatDate, calculateNextReset, getDaysUntil } from './utils';
 
 export function calculateTeamBalance(profile: ProfileResponse): BalanceResult {
