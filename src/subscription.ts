@@ -23,17 +23,25 @@ export function calculateSubscriptionBalance(profile: ProfileResponse): BalanceR
     const expiryDate = formatDate(subscription_expiry);
     const expiryRelative = getDaysUntil(subscription_expiry);
 
-    const weeklyRemaining = subscription_plan.weekly_limit - current_week_spend;
+    const dailyBalance = subscription_plan.daily_balance;
+    const weeklyLimit = subscription_plan.weekly_limit;
 
-    const dailyPercentage = (subscription_balance / subscription_plan.daily_balance) * 100;
-    const weeklyPercentage = (weeklyRemaining / subscription_plan.weekly_limit) * 100;
-    const isCriticalDaily = dailyPercentage <= weeklyPercentage;
+    const dailyUsed = Math.max(0, dailyBalance - subscription_balance);
+    const weeklyUsed = Math.max(0, current_week_spend);
+
+    const dailyPercentage = dailyBalance === 0
+        ? 0
+        : Math.min(100, (dailyUsed / dailyBalance) * 100);
+    const weeklyPercentage = weeklyLimit === 0
+        ? 0
+        : Math.min(100, (weeklyUsed / weeklyLimit) * 100);
+    const isCriticalDaily = dailyPercentage >= weeklyPercentage;
 
     const tooltip = [
         `Subscription Mode`,
         `Plan: ${subscription_plan.name}`,
-        `Daily: $${subscription_balance.toFixed(2)} / $${subscription_plan.daily_balance.toFixed(2)} (${dailyPercentage.toFixed(1)}%)`,
-        `Weekly: $${weeklyRemaining.toFixed(2)} / $${subscription_plan.weekly_limit.toFixed(2)} (${weeklyPercentage.toFixed(1)}%)`,
+        `Daily: $${dailyUsed.toFixed(2)} / $${dailyBalance.toFixed(2)} (${dailyPercentage.toFixed(1)}%)`,
+        `Weekly: $${weeklyUsed.toFixed(2)} / $${weeklyLimit.toFixed(2)} (${weeklyPercentage.toFixed(1)}%)`,
         `Reset: ${nextReset} (${resetRelative})`,
         `Expiry: ${expiryDate} (${expiryRelative})`,
         ``,
