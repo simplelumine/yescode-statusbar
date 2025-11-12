@@ -8,8 +8,7 @@ Your essential companion for YesCode in VS Code. Monitor your balance and manage
 
 -   **Balance Monitoring:** Keep an eye on your most critical balance (Team, Subscription, or PayGo) directly in the status bar.
 -   **Provider Management:** Switch your default and alternative providers for both your user account and your team account without ever leaving the editor.
--   **Multi-Environment Support:** Automatically detects whether your API key is for the Production (`co.yes.vg`) or Test (`cotest.yes.vg`) environment and points to the correct endpoints.
--   **Environment Indicator:** The tooltip now clearly indicates if you are connected to the `[Production]` or `[Test]` environment.
+-   **Seamless Account Support:** Works with all types of YesCode accounts, including production and special/testing accounts, by automatically connecting to the correct backend services.
 -   **Centralized Command Menu:** A single click on the status bar opens a menu with all core extension commands.
 -   **Smart Display Modes:** Automatically detects the most relevant balance to display, with a manual override to lock it to a specific mode.
 -   **Detailed Tooltips:** Hover over the status bar for a mini-dashboard with a full breakdown of your current balance.
@@ -28,7 +27,7 @@ Your essential companion for YesCode in VS Code. Monitor your balance and manage
 -   **`YesCode: Show Menu`**: Opens the main command menu from the status bar.
 -   **`YesCode: Refresh Balance`**: Manually refreshes your balance information.
 -   **`YesCode: Switch Display Mode`**: Manually selects which balance to display.
--   **`YesCode: Switch Vendor`**: Opens the provider management interface. (Not available in Test environment).
+-   **`YesCode: Switch Vendor`**: Opens the provider management interface. (Not available for special/testing accounts).
 -   **`YesCode: Set API Key`**: Stores your API key securely.
 
 ## Known Issues
@@ -59,8 +58,8 @@ This project would not have been possible without the incredible support and con
 
 ```bash
 # Clone the repository
-git clone https://github.com/simplelumine/yescode-statusbar.git
-cd yescode-statusbar
+git clone https://github.com/simplelumine/yescoder.git
+cd yescoder
 
 # Install dependencies
 npm install
