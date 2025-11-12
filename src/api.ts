@@ -8,6 +8,80 @@ import {
     TeamProviderSelectionResponse
 } from './types';
 
+// ============================================================================
+// Environment Detection
+// ============================================================================
+
+export type Environment = 'production' | 'test';
+
+const ENVIRONMENTS = {
+    production: 'https://co.yes.vg',
+    test: 'https://cotest.yes.vg'
+};
+
+/**
+ * Detect which environment the API key belongs to
+ */
+async function detectEnvironment(apiKey: string): Promise<Environment | null> {
+    console.log('Detecting environment for API key...');
+
+    // Test both environments concurrently
+    const results = await Promise.allSettled([
+        fetch(`${ENVIRONMENTS.production}/api/v1/auth/profile`, {
+            method: 'GET',
+            headers: { 'X-API-Key': apiKey }
+        }),
+        fetch(`${ENVIRONMENTS.test}/api/v1/auth/profile`, {
+            method: 'GET',
+            headers: { 'X-API-Key': apiKey }
+        })
+    ]);
+
+    const [prodResult, testResult] = results;
+
+    // Check production environment
+    if (prodResult.status === 'fulfilled' && prodResult.value.ok) {
+        console.log('✓ API key belongs to PRODUCTION environment');
+        return 'production';
+    }
+
+    // Check test environment
+    if (testResult.status === 'fulfilled' && testResult.value.ok) {
+        console.log('✓ API key belongs to TEST environment');
+        return 'test';
+    }
+
+    console.log('✗ API key is invalid in both environments');
+    return null;
+}
+
+/**
+ * Get the current environment from storage
+ */
+export async function getCurrentEnvironment(context: vscode.ExtensionContext): Promise<Environment> {
+    return context.globalState.get<Environment>('yescode.environment', 'production');
+}
+
+/**
+ * Get the base URL for the current environment
+ */
+export async function getBaseUrl(context: vscode.ExtensionContext): Promise<string> {
+    const env = await getCurrentEnvironment(context);
+    return ENVIRONMENTS[env];
+}
+
+/**
+ * Check if provider switching is available (not available in test environment)
+ */
+export async function isProviderSwitchingAvailable(context: vscode.ExtensionContext): Promise<boolean> {
+    const env = await getCurrentEnvironment(context);
+    return env === 'production';
+}
+
+// ============================================================================
+// API Key Management
+// ============================================================================
+
 export async function fetchBalance(context: vscode.ExtensionContext): Promise<ProfileResponse | null> {
     try {
         const apiKey = await context.secrets.get('yescode.apiKey');
@@ -24,7 +98,8 @@ export async function fetchBalance(context: vscode.ExtensionContext): Promise<Pr
             return null;
         }
 
-        const response = await fetch('https://co.yes.vg/api/v1/auth/profile', {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/auth/profile`, {
             method: 'GET',
             headers: {
                 'X-API-Key': apiKey
@@ -53,12 +128,31 @@ export async function setApiKey(context: vscode.ExtensionContext): Promise<void>
         placeHolder: 'Your API key will be stored securely'
     });
 
-    if (apiKey) {
-        await context.secrets.store('yescode.apiKey', apiKey);
-        vscode.window.showInformationMessage('API Key saved securely!');
-    } else {
+    if (!apiKey) {
         vscode.window.showWarningMessage('API Key not saved');
+        return;
     }
+
+    // Show progress while detecting environment
+    const env = await vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: "Validating API Key...",
+        cancellable: false
+    }, async () => {
+        return await detectEnvironment(apiKey);
+    });
+
+    if (!env) {
+        vscode.window.showErrorMessage('Invalid API Key. Please check and try again.');
+        return;
+    }
+
+    // Save API key and environment
+    await context.secrets.store('yescode.apiKey', apiKey);
+    await context.globalState.update('yescode.environment', env);
+
+    const envName = env === 'production' ? 'Production' : 'Test';
+    vscode.window.showInformationMessage(`API Key saved successfully! (${envName} Environment)`);
 }
 
 // ============================================================================
@@ -73,7 +167,8 @@ export async function getAvailableProviders(context: vscode.ExtensionContext): P
             return null;
         }
 
-        const response = await fetch('https://co.yes.vg/api/v1/user/available-providers', {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/available-providers`, {
             method: 'GET',
             headers: {
                 'X-API-Key': apiKey
@@ -99,7 +194,8 @@ export async function getUserProviderAlternatives(context: vscode.ExtensionConte
             return null;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/provider-alternatives/${providerId}`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/provider-alternatives/${providerId}`, {
             method: 'GET',
             headers: {
                 'X-API-Key': apiKey
@@ -128,7 +224,8 @@ export async function getCurrentUserSelection(context: vscode.ExtensionContext, 
             return null;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/provider-alternatives/${providerId}/selection`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/provider-alternatives/${providerId}/selection`, {
             method: 'GET',
             headers: {
                 'X-API-Key': apiKey
@@ -156,7 +253,8 @@ export async function setUserSelection(context: vscode.ExtensionContext, provide
             return null;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/provider-alternatives/${providerId}/selection`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/provider-alternatives/${providerId}/selection`, {
             method: 'PUT',
             headers: {
                 'X-API-Key': apiKey,
@@ -190,7 +288,8 @@ export async function getTeamProviderAlternatives(context: vscode.ExtensionConte
             return null;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/team-provider-alternatives/${providerType}`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/team-provider-alternatives/${providerType}`, {
             method: 'GET',
             headers: {
                 'X-API-Key': apiKey
@@ -218,7 +317,8 @@ export async function getCurrentTeamSelection(context: vscode.ExtensionContext, 
             return null;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/team-provider-alternatives/${providerType}/selection`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/team-provider-alternatives/${providerType}/selection`, {
             method: 'GET',
             headers: {
                 'X-API-Key': apiKey
@@ -246,7 +346,8 @@ export async function setTeamSelection(context: vscode.ExtensionContext, provide
             return null;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/team-provider-alternatives/${providerType}/selection`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/team-provider-alternatives/${providerType}/selection`, {
             method: 'PUT',
             headers: {
                 'X-API-Key': apiKey,
@@ -276,7 +377,8 @@ export async function resetTeamSelection(context: vscode.ExtensionContext, provi
             return false;
         }
 
-        const response = await fetch(`https://co.yes.vg/api/v1/user/team-provider-alternatives/${providerType}/selection`, {
+        const baseUrl = await getBaseUrl(context);
+        const response = await fetch(`${baseUrl}/api/v1/user/team-provider-alternatives/${providerType}/selection`, {
             method: 'DELETE',
             headers: {
                 'X-API-Key': apiKey

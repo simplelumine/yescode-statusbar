@@ -3,12 +3,12 @@
   "displayName": "YesCoder",
   "publisher": "simplelumine",
   "description": "Your essential companion for YesCode in VS Code. Monitor your balance and manage providers seamlessly.",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "license": "MIT",
   "icon": "logo.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/simplelumine/yescode-statusbar.git"
+    "url": "https://github.com/simplelumine/yescoder.git"
   },
   "engines": {
     "vscode": "^1.85.0"

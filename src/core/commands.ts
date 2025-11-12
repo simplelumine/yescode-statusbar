@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { fetchBalance, setApiKey } from '../api';
+import { fetchBalance, setApiKey, isProviderSwitchingAvailable } from '../api';
 import { DisplayMode } from '../monitor/balance';
 import { showVendorSwitchMenu } from '../providers';
 import { updateStatusBar, setDisplayMode, getDisplayMode } from './statusbar';
@@ -38,7 +38,8 @@ export function registerCommands(context: vscode.ExtensionContext): void {
 }
 
 async function handleShowMenu(context: vscode.ExtensionContext): Promise<void> {
-    const items = buildMainMenu();
+    const showProviderSwitch = await isProviderSwitchingAvailable(context);
+    const items = buildMainMenu(showProviderSwitch);
 
     const selected = await vscode.window.showQuickPick(items, {
         placeHolder: 'YesCode Menu'

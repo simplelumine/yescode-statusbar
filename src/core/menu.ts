@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { ProfileResponse } from '../types';
 import { DisplayMode } from '../monitor/balance';
 
-export function buildMainMenu(): vscode.QuickPickItem[] {
-    return [
+export function buildMainMenu(showProviderSwitch: boolean = true): vscode.QuickPickItem[] {
+    const items: vscode.QuickPickItem[] = [
         {
             label: '$(sync) Refresh Balance',
             description: 'Manually refresh balance data'
@@ -11,16 +11,23 @@ export function buildMainMenu(): vscode.QuickPickItem[] {
         {
             label: '$(symbol-color) Switch Display Mode',
             description: 'Change between Auto/Subscription/PayGo/Team modes'
-        },
-        {
-            label: '$(arrow-swap) Switch Vendor',
-            description: 'Change provider vendor settings'
-        },
-        {
-            label: '$(key) Set API Key',
-            description: 'Configure your YesCode API key'
         }
     ];
+
+    // Only show provider switching in production environment
+    if (showProviderSwitch) {
+        items.push({
+            label: '$(arrow-swap) Switch Vendor',
+            description: 'Change provider vendor settings'
+        });
+    }
+
+    items.push({
+        label: '$(key) Set API Key',
+        description: 'Configure your YesCode API key'
+    });
+
+    return items;
 }
 
 export function buildDisplayModeMenu(profile: ProfileResponse, currentDisplayMode: DisplayMode): vscode.QuickPickItem[] {

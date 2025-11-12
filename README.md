@@ -8,8 +8,10 @@ Your essential companion for YesCode in VS Code. Monitor your balance and manage
 
 -   **Balance Monitoring:** Keep an eye on your most critical balance (Team, Subscription, or PayGo) directly in the status bar.
 -   **Provider Management:** Switch your default and alternative providers for both your user account and your team account without ever leaving the editor.
+-   **Multi-Environment Support:** Automatically detects whether your API key is for the Production (`co.yes.vg`) or Test (`cotest.yes.vg`) environment and points to the correct endpoints.
+-   **Environment Indicator:** The tooltip now clearly indicates if you are connected to the `[Production]` or `[Test]` environment.
 -   **Centralized Command Menu:** A single click on the status bar opens a menu with all core extension commands.
--   **Smart Display Modes:** Automatically detects the most relevant balance to display, with a manual override to lock it to a specific mode (Team, Subscription, or PayGo).
+-   **Smart Display Modes:** Automatically detects the most relevant balance to display, with a manual override to lock it to a specific mode.
 -   **Detailed Tooltips:** Hover over the status bar for a mini-dashboard with a full breakdown of your current balance.
 -   **Secure API Key Storage:** Uses VS Code's native `SecretStorage` to keep your API key safe.
 -   **Automatic Refresh:** Keeps your balance up-to-date by automatically refreshing every minute.
@@ -18,7 +20,7 @@ Your essential companion for YesCode in VS Code. Monitor your balance and manage
 
 1.  Install the extension from the VS Code Marketplace.
 2.  Click the "YesCode: Loading..." item in the status bar to open the menu.
-3.  Select `Set API Key` and enter your YesCode API key when prompted.
+3.  Select `Set API Key` and enter your YesCode API key when prompted. The extension will automatically detect the correct environment.
 4.  Your balance and provider management features are now active.
 
 ## Commands
@@ -26,8 +28,12 @@ Your essential companion for YesCode in VS Code. Monitor your balance and manage
 -   **`YesCode: Show Menu`**: Opens the main command menu from the status bar.
 -   **`YesCode: Refresh Balance`**: Manually refreshes your balance information.
 -   **`YesCode: Switch Display Mode`**: Manually selects which balance to display.
--   **`YesCode: Switch Vendor`**: Opens the provider management interface.
+-   **`YesCode: Switch Vendor`**: Opens the provider management interface. (Not available in Test environment).
 -   **`YesCode: Set API Key`**: Stores your API key securely.
+
+## Known Issues
+
+-   **API Data Dependency:** The extension is built to be resilient against missing optional data from the YesCode API. However, in the rare event that the API returns a fundamentally malformed data object (e.g., a provider object missing a required field like `display_name`), the extension may encounter an error. A refresh (`YesCode: Refresh Balance`) will typically resolve this once the API is stable.
 
 ## Project Architecture
 
@@ -37,12 +43,17 @@ This extension is built with a clean, feature-driven architecture:
 -   `src/core/`: Contains the core logic for command registration and status bar creation.
 -   `src/monitor/`: All logic for the balance monitoring feature.
 -   `src/providers/`: All logic for the provider management feature.
--   `src/api.ts`: Manages all API calls to YesCode.
+-   `src/api.ts`: Manages all API calls to YesCode, including environment detection.
 -   `src/types.ts`: Defines all shared data structures.
 
 ## Acknowledgements
 
-Special thanks to **好果汁**, the CFO of YesCode, for providing invaluable testing, support, and guidance.
+This project would not have been possible without the incredible support and contributions from several key individuals:
+
+-   A very special thanks to my mentor, **好果汁 (YesCode CFO)**, for providing the testing environment, crucial financial support, and invaluable guidance throughout the entire development process.
+-   Thank you to the **YesCode CTO** for their insightful guidance on the project's name and direction.
+-   Thank you to **喵酱 (YesCode User: 太阳照常升起)** for providing detailed API documentation which was essential for the implementation.
+-   Thank you to **萝拉酱 (YesCode User: Aurora)** for their thorough testing and feedback.
 
 ## Development
 
