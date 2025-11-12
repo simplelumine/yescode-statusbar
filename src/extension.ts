@@ -200,7 +200,7 @@ async function updateBalance(context: vscode.ExtensionContext, isAutoRefresh: bo
         statusBarItem.tooltip = result.tooltip;
 
         if (result.type !== 'payGo') {
-            if (result.percentage < 10) {
+            if (result.percentage > 90) {
                 statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
             } else {
                 statusBarItem.backgroundColor = undefined;

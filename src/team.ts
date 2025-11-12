@@ -16,31 +16,33 @@ export function calculateTeamBalance(profile: ProfileResponse): BalanceResult {
     const expiryRelative = getDaysUntil(team_membership.expires_at);
 
     const dailyBalance = current_team.per_user_daily_balance;
-    const dailySpent = team_membership.daily_subscription_spending;
-    const dailyRemaining = dailyBalance - dailySpent;
+    const dailySpent = Math.max(0, team_membership.daily_subscription_spending);
 
     const weeklyLimit = current_team.weekly_limit;
-    const weeklySpent = team_membership.current_week_spend;
-    const weeklyRemaining = weeklyLimit - weeklySpent;
+    const weeklySpent = Math.max(0, team_membership.current_week_spend);
 
-    const dailyPercentage = (dailyRemaining / dailyBalance) * 100;
-    const weeklyPercentage = (weeklyRemaining / weeklyLimit) * 100;
+    const dailyPercentage = dailyBalance === 0
+        ? 0
+        : Math.min(100, (dailySpent / dailyBalance) * 100);
+    const weeklyPercentage = weeklyLimit === 0
+        ? 0
+        : Math.min(100, (weeklySpent / weeklyLimit) * 100);
 
-    // Display the smaller percentage (more critical)
-    const shouldShowDaily = dailyPercentage <= weeklyPercentage;
+    // Display the larger percentage (more critical usage)
+    const shouldShowDaily = dailyPercentage >= weeklyPercentage;
 
     const tooltip = [
         `Team Mode`,
         `Group: ${current_team.name}`,
-        `Daily: $${dailyRemaining.toFixed(2)} / $${dailyBalance.toFixed(2)} (${dailyPercentage.toFixed(1)}%)`,
-        `Weekly: $${weeklyRemaining.toFixed(2)} / $${weeklyLimit.toFixed(2)} (${weeklyPercentage.toFixed(1)}%)`,
+        `Daily: $${dailySpent.toFixed(2)} / $${dailyBalance.toFixed(2)} (${dailyPercentage.toFixed(1)}%)`,
+        `Weekly: $${weeklySpent.toFixed(2)} / $${weeklyLimit.toFixed(2)} (${weeklyPercentage.toFixed(1)}%)`,
         `Reset: ${nextReset} (${resetRelative})`,
         `Expiry: ${expiryDate} (${expiryRelative})`,
         ``,
         'Click to open menu'
     ].join('\n');
 
-    // Return the smaller percentage (more critical)
+    // Return the percentage that represents higher usage (more critical)
     if (shouldShowDaily) {
         return {
             type: 'daily',
