@@ -1,9 +1,9 @@
 {
   "name": "yescode-statusbar",
-  "displayName": "YesCode StatusBar",
+  "displayName": "[DEPRECATED] YesCode StatusBar",
   "publisher": "simplelumine",
-  "description": "Display YesCode subscription balance in VS Code status bar",
-  "version": "0.2.0",
+  "description": "This extension is now YesCoder. Please uninstall this version and install the new, improved YesCoder extension.",
+  "version": "0.2.1",
   "license": "MIT",
   "icon": "logo.png",
   "repository": {
@@ -21,24 +21,7 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "yescode.showMenu",
-        "title": "YesCode: Show Menu"
-      },
-      {
-        "command": "yescode.setApiKey",
-        "title": "YesCode: Set API Key"
-      },
-      {
-        "command": "yescode.refreshBalance",
-        "title": "YesCode: Refresh Balance"
-      },
-      {
-        "command": "yescode.switchDisplayMode",
-        "title": "YesCode: Switch Display Mode"
-      }
-    ]
+    "commands": []
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

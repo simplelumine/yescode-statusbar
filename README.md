@@ -1,3 +1,13 @@
+# ⚠️ This Extension is Deprecated ⚠️
+
+**This extension has been replaced by the new and improved "YesCoder" extension.**
+
+Please uninstall this extension and install the official "YesCoder" extension for the latest features and updates.
+
+➡️ **[Install the new YesCoder Extension Here](https://marketplace.visualstudio.com/items?itemName=simplelumine.yescoder)** ⬅️
+
+---
+
 # YesCode StatusBar
 
 **Official Website:** [https://co.yes.vg](https://co.yes.vg)
