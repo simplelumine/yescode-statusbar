@@ -1,6 +1,8 @@
 # YesCoder
 
-**Official Website:** [https://co.yes.vg](https://co.yes.vg)
+-   **Official Website:** [https://co.yes.vg](https://co.yes.vg)
+-   **Test Website:** [https://cotest.yes.vg](https://cotest.yes.vg)
+-   **VS Code Marketplace:** [Download Extension](https://marketplace.visualstudio.com/items?itemName=simplelumine.yescoder)
 
 Your essential companion for YesCode in VS Code. Monitor your balance and manage providers seamlessly from the status bar.
 

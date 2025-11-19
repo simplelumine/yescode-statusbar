@@ -15,19 +15,19 @@ export function buildTeamMenuItems(osLabel: string): TeamMenuItem[] {
             label: '$(organization) Claude Code',
             description: 'TEAM',
             cli: 'claude',
-            detail: `  └ Detected OS: ${osLabel}`
+            detail: `  └ Current OS: ${osLabel}`
         },
         {
             label: '$(organization) Codex CLI',
             description: 'TEAM',
             cli: 'codex',
-            detail: `  └ Detected OS: ${osLabel}`
+            detail: `  └ Current OS: ${osLabel}`
         },
         {
             label: '$(organization) Gemini CLI',
             description: 'TEAM',
             cli: 'gemini',
-            detail: `  └ Detected OS: ${osLabel}`
+            detail: `  └ Current OS: ${osLabel}`
         }
     ];
 }

@@ -15,19 +15,19 @@ export function buildUserMenuItems(osLabel: string): UserMenuItem[] {
             label: '$(person) Claude Code',
             description: '',
             cli: 'claude',
-            detail: `  └ Detected OS: ${osLabel}`
+            detail: `  └ Current OS: ${osLabel}`
         },
         {
             label: '$(person) Codex CLI',
             description: '',
             cli: 'codex',
-            detail: `  └ Detected OS: ${osLabel}`
+            detail: `  └ Current OS: ${osLabel}`
         },
         {
             label: '$(person) Gemini CLI',
             description: '',
             cli: 'gemini',
-            detail: `  └ Detected OS: ${osLabel}`
+            detail: `  └ Current OS: ${osLabel}`
         }
     ];
 }
